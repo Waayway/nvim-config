@@ -882,23 +882,5 @@ require("lazy").setup({
 	},
 })
 
-local harpoon = require("harpoon")
-
-harpoon:setup({})
-
-vim.keymap.set("n", "<leader>a", function()
-	harpoon:list():add()
-end)
-
-for i = 1, 5 do
-	vim.keymap.set("n", string.format("<leader>%s", i), function()
-		harpoon:list():select(i)
-	end)
-end
-
-vim.keymap.set("n", "<leader>h", function()
-	harpoon.ui:toggle_quick_menu(harpoon:list())
-end)
-
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
