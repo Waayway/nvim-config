@@ -12,7 +12,7 @@ return {
 		local neogit = require("neogit")
 		neogit.setup({})
 		vim.keymap.set("n", "<leader>g", function()
-			neogit.open({ kind = "floating" })
+			neogit.open({})
 		end, { desc = "[G]it status" })
 	end,
 }

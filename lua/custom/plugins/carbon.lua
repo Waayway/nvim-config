@@ -6,7 +6,7 @@ return {
 		carbon.setup({ open_on_dir = false, auto_open = false })
 
 		vim.keymap.set("n", "<leader>m", function()
-			carbon.explore_float()
+			carbon.explore()
 		end, { desc = "Open file [M]anager" })
 	end,
 }

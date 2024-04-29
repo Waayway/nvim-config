@@ -354,7 +354,7 @@ require("lazy").setup({
 				--   },
 				-- },
 				-- pickers = {}
-				file_ignore_patterns = { "node%_modules/.*" },
+				file_ignore_patterns = { "node_modules/.*" },
 
 				extensions = {
 					["ui-select"] = {
@@ -851,7 +851,8 @@ require("lazy").setup({
 	--  Uncomment any of the lines below to enable them (you will need to restart nvim).
 	--
 	-- require 'kickstart.plugins.debug',
-	-- require 'kickstart.plugins.indent_line',
+	-- require("kickstart.plugins.autopairs"),
+	-- require("kickstart.plugins.indent_line"),
 	-- require 'kickstart.plugins.lint',
 
 	-- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
