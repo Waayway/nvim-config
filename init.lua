@@ -83,6 +83,27 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+-- Global functions
+--
+--
+local function get_os()
+	local os_name
+	if vim.fn.has("mac") == 1 then
+		os_name = "macOS"
+	elseif vim.fn.has("win32") == 1 then
+		os_name = "Windows"
+	elseif vim.fn.has("unix") == 1 then
+		-- Further check if it is NixOS
+		if vim.fn.filereadable("/etc/NIXOS") == 1 or vim.fn.executable("nixos-version") == 1 then
+			os_name = "NixOS"
+		else
+			os_name = "Linux"
+		end
+	else
+		os_name = "Unknown"
+	end
+	return os_name
+end
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -281,12 +302,13 @@ require("lazy").setup({
 			require("which-key").setup()
 
 			-- Document existing key chains
-			require("which-key").register({
-				["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-				["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-				["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-				["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-				["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
+			require("which-key").add({
+				{ "<leader>c", group = "[C]ode" },
+				{ "<leader>d", group = "[D]ocument" },
+				{ "<leader>r", group = "[R]ename" },
+				{ "<leader>s", group = "[S]earch" },
+				{ "<leader>w", group = "[W]orkspace" },
+				{ "<leader>t", group = "[T]oggle" },
 			})
 		end,
 	},
@@ -411,10 +433,6 @@ require("lazy").setup({
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			-- Automatically install LSPs and related tools to stdpath for Neovim
-			"williamboman/mason.nvim",
-			"williamboman/mason-lspconfig.nvim",
-			"WhoIsSethDaniel/mason-tool-installer.nvim",
 
 			-- Useful status updates for LSP.
 			-- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -423,6 +441,11 @@ require("lazy").setup({
 			-- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
 			-- used for completion, annotations and signatures of Neovim apis
 			{ "folke/neodev.nvim", opts = {} },
+
+			-- Automatically install LSPs and related tools to stdpath for Neovim
+			(get_os() ~= "NixOS" and "williamboman/mason.nvim" or nil),
+			(get_os() ~= "NixOS" and "williamboman/mason-lspconfig.nvim" or nil),
+			(get_os() ~= "NixOS" and "WhoIsSethDaniel/mason-tool-installer.nvim" or nil),
 		},
 		config = function()
 			-- Brief aside: **What is LSP?**
@@ -560,6 +583,17 @@ require("lazy").setup({
 				-- But for many setups, the LSP (`tsserver`) will work just fine
 				-- tsserver = {},
 				--
+				tsserver = {},
+
+				tailwindcss = {},
+
+				rust_analyzer = {},
+
+				nixd = {},
+
+				astro = {},
+
+				emmet_ls = {},
 
 				lua_ls = {
 					-- cmd = {...},
@@ -583,7 +617,9 @@ require("lazy").setup({
 			--    :Mason
 			--
 			--  You can press `g?` for help in this menu.
-			require("mason").setup()
+			if get_os() ~= "NixOS" then
+				require("mason").setup()
+			end
 
 			-- You can add other tools here that you want Mason to install
 			-- for you, so that they are available from within Neovim.
@@ -591,20 +627,32 @@ require("lazy").setup({
 			vim.list_extend(ensure_installed, {
 				"stylua", -- Used to format Lua code
 			})
-			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-			require("mason-lspconfig").setup({
-				handlers = {
-					function(server_name)
-						local server = servers[server_name] or {}
-						-- This handles overriding only values explicitly passed
-						-- by the server configuration above. Useful when disabling
-						-- certain features of an LSP (for example, turning off formatting for tsserver)
-						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-						require("lspconfig")[server_name].setup(server)
-					end,
-				},
-			})
+			if get_os() ~= "NixOS" then
+				local MasonToolInstaller = require("mason-tool-installer")
+
+				MasonToolInstaller.setup({ ensure_installed = ensure_installed })
+				MasonToolInstaller.clean()
+
+				require("mason-lspconfig").setup({
+					handlers = {
+						function(server_name)
+							local server = servers[server_name] or {}
+							-- This handles overriding only values explicitly passed
+							-- by the server configuration above. Useful when disabling
+							-- certain features of an LSP (for example, turning off formatting for tsserver)
+							server.capabilities =
+								vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+							require("lspconfig")[server_name].setup(server)
+						end,
+					},
+				})
+			else
+				for server_name, server in pairs(servers) do
+					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+					require("lspconfig")[server_name].setup(server)
+				end
+			end
 		end,
 	},
 
