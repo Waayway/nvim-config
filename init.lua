@@ -111,6 +111,10 @@ end
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- set swapfile to false
+-- Generally not recommended...
+vim.opt.swapfile = false
+
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
 
@@ -584,6 +588,8 @@ require("lazy").setup({
 				-- tsserver = {},
 				--
 				tsserver = {},
+
+				intelephense = {},
 
 				tailwindcss = {},
 
