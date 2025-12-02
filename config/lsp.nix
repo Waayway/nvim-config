@@ -1,4 +1,8 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  ...
+}:
 {
   plugins = {
     lsp-format = {
@@ -24,7 +28,7 @@
               };
               options = {
                 nixos.expr = ''${flake}.nixosConfigurations.grovetender.options'';
-                nixvim.expr = ''${flakeNixvim}.packages.${pkgs.system}.default.options'';
+                nixvim.expr = ''${flakeNixvim}.packages.${pkgs.stdenv.hostPlatform.system}.default.options'';
               };
             };
         };

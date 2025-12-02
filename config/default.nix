@@ -1,8 +1,9 @@
 { ... }:
 {
   imports = [
+    ./config.nix
     ./colorscheme.nix
     ./lsp.nix
-    ./plugins.nix
+    ./plugins
   ];
 }
