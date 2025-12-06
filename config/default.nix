@@ -4,6 +4,7 @@
     ./config.nix
     ./colorscheme.nix
     ./lsp.nix
+    ./format.nix
     ./plugins
   ];
 }
