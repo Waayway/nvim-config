@@ -12,6 +12,15 @@
       enable = true;
       inlayHints = true;
       servers = {
+        ts_ls = {
+          enable = true;
+        };
+        tailwindcss = {
+          enable = true;
+        };
+        gopls = {
+          enable = true;
+        };
         nixd = {
           enable = true;
           settings =
