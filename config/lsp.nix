@@ -36,8 +36,8 @@
                 command = [ "${lib.getExe pkgs.nixfmt-rfc-style}" ];
               };
               options = {
-                nixos.expr = ''${flake}.nixosConfigurations.grovetender.options'';
-                nixvim.expr = ''${flakeNixvim}.packages.${pkgs.stdenv.hostPlatform.system}.default.options'';
+                nixos.expr = "${flake}.nixosConfigurations.grovetender.options";
+                nixvim.expr = "${flakeNixvim}.packages.${pkgs.stdenv.hostPlatform.system}.default.options";
               };
             };
         };

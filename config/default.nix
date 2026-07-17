@@ -6,5 +6,6 @@
     ./lsp.nix
     ./format.nix
     ./plugins
+    ./keymaps.nix
   ];
 }
